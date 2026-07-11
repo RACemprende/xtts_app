@@ -1,9 +1,7 @@
 import streamlit as st
+import torch
 
-st.title("Prueba de dependencias")
+st.title("Prueba Torch")
 
-import transformers
-
-st.success("Transformers OK")
-
-st.write(transformers.__version__)
+st.success(f"Torch OK: {torch.__version__}")
+``
