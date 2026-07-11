@@ -9,4 +9,4 @@ torchvision
 transformers==4.57.5
 sentencepiece
 
-coqui-tts==0.27.5
+coqui-tts==0.25.3
