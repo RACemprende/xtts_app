@@ -1,4 +1,4 @@
 import streamlit as st
-import transformers
+from TTS.api import TTS
 
-st.write(transformers.__version__)
+st.write("TTS importado")
