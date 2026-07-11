@@ -1,12 +1,11 @@
 streamlit
 
-numpy<2.5
-
 torch
-torchaudio
 torchvision
+torchaudio
 
 transformers==4.57.5
+
 sentencepiece
 
-coqui-tts==0.25.3
+coqui-tts==0.27.5
