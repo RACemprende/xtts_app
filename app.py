@@ -1,21 +1,28 @@
+import os
 import streamlit as st
-import sys
 import torch
-import torchaudio
+import transformers.pytorch_utils as ptu
 
-st.write("Python:", sys.version)
-st.write("Torch:", torch.__version__)
-st.write("Torchaudio:", torchaudio.__version__)
+# Aceptar licencia CPML automáticamente
+os.environ["COQUI_TOS_AGREED"] = "1"
+
+if not hasattr(ptu, "isin_mps_friendly"):
+    def isin_mps_friendly(elements, test_elements):
+        return torch.isin(elements, test_elements)
+    ptu.isin_mps_friendly = isin_mps_friendly
+
+from TTS.api import TTS
+
+st.write("Import OK")
 
 try:
-    import torchcodec
-    st.write("torchcodec OK")
+    tts = TTS(
+        "tts_models/multilingual/multi-dataset/xtts_v2",
+        gpu=False
+    )
+
+    st.success("XTTS cargado")
+    st.write(f"Speakers: {len(tts.speakers)}")
+
 except Exception as e:
-    st.write("torchcodec ERROR:", str(e))
-
-try:
-    from TTS.api import TTS
-    st.success("TTS importado")
-except Exception:
-    import traceback
-    st.code(traceback.format_exc())
+    st.error(str(e))
