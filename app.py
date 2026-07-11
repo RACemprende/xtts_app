@@ -1,7 +1,10 @@
+import torch
 import streamlit as st
 
+st.write(torch.__version__)
+
 try:
-    import torchcodec
-    st.success("torchcodec instalado")
+    import TTS
+    st.success("TTS importado")
 except Exception as e:
-    st.error(f"torchcodec NO instalado: {e}")
+    st.error(str(e))
