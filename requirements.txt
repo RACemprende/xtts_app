@@ -1,3 +1,5 @@
 streamlit
 torch
 transformers
+sentencepiece
+coqui-tts==0.27.5
