@@ -1,28 +1,29 @@
 import os
+os.environ["COQUI_TOS_AGREED"] = "1"
+
 import streamlit as st
 import torch
 import transformers.pytorch_utils as ptu
 
-# Aceptar licencia CPML automáticamente
-os.environ["COQUI_TOS_AGREED"] = "1"
-
 if not hasattr(ptu, "isin_mps_friendly"):
     def isin_mps_friendly(elements, test_elements):
         return torch.isin(elements, test_elements)
+
     ptu.isin_mps_friendly = isin_mps_friendly
+
+st.write("ANTES DEL IMPORT")
 
 from TTS.api import TTS
 
-st.write("Import OK")
+st.write("DESPUÉS DEL IMPORT")
 
-try:
-    tts = TTS(
-        "tts_models/multilingual/multi-dataset/xtts_v2",
-        gpu=False
-    )
+st.write("ANTES DE CREAR TTS")
 
-    st.success("XTTS cargado")
-    st.write(f"Speakers: {len(tts.speakers)}")
+tts = TTS(
+    "tts_models/multilingual/multi-dataset/xtts_v2",
+    gpu=False
+)
 
-except Exception as e:
-    st.error(str(e))
+st.write("DESPUÉS DE CREAR TTS")
+
+st.success("XTTS cargado")
