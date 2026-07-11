@@ -1,5 +1,4 @@
 import streamlit as st
+import transformers
 
-st.title("Prueba básica")
-
-st.success("La app está viva")
+st.write(transformers.__version__)
