@@ -2,12 +2,12 @@ import streamlit as st
 import torch
 import torchaudio
 
+st.write("Python:", __import__("sys").version)
 st.write("Torch:", torch.__version__)
 st.write("Torchaudio:", torchaudio.__version__)
 
 try:
-    from TTS.api import TTS
-    st.success("TTS importado")
+    import torchcodec
+    st.success("torchcodec instalado")
 except Exception as e:
-    import traceback
-    st.code(traceback.format_exc())
+    st.error(f"torchcodec ERROR: {e}")
