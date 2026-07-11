@@ -20,7 +20,7 @@ st.write("DESPUÉS DEL IMPORT")
 st.write("ANTES DE CREAR TTS")
 
 tts = TTS(
-    "tts_models/multilingual/multi-dataset/xtts_v2",
+    "tts_models/es/css10/vits",
     gpu=False
 )
 
