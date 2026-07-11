@@ -1,11 +1,7 @@
 streamlit
 
+torchcodec
+
 torch
 torchvision
 torchaudio
-
-transformers==4.57.5
-
-sentencepiece
-
-coqui-tts
