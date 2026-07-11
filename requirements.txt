@@ -1,7 +1,5 @@
 streamlit
 
-torchcodec
-
 torch
 torchvision
 torchaudio
