@@ -17,7 +17,7 @@ st.write("Import OK")
 @st.cache_resource
 def load_model():
     return TTS(
-        "tts_models/multilingual/multi-dataset/xtts_v2",
+        "tts_models/es/css10/vits",
         gpu=False
     )
 
