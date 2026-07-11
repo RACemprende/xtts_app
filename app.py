@@ -1,4 +1,7 @@
 import streamlit as st
+import sys
+
+st.write(sys.version)
 
 import torch
 import transformers.pytorch_utils as ptu
