@@ -1,6 +1,5 @@
 import streamlit as st
-import torch
 
-st.title("Prueba Torch")
+from TTS.api import TTS
 
-st.success(f"Torch OK: {torch.__version__}")
+st.success("Coqui cargado correctamente")
