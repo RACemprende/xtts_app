@@ -1,8 +1,9 @@
 import streamlit as st
 
-st.title("XTTS Test")
+st.title("Prueba de dependencias")
 
-texto = st.text_area("Texto")
+import transformers
 
-if st.button("Generar"):
-    st.write(f"Texto recibido: {texto}")
+st.success("Transformers OK")
+
+st.write(transformers.__version__)
