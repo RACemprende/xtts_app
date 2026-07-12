@@ -60,34 +60,18 @@ footer {
 # CABECERA
 # --------------------------------------------------
 
+# --------------------------------------------------
+# CABECERA
+# --------------------------------------------------
+
+col_logo, col_title = st.columns([1, 5])
+
+with col_logo:
+    st.image("logo.JPG", width=120)
+
 with col_title:
-    st.markdown(
-        """
-        <div style="margin-top:8px; margin-left:-5px;">
-
-            <h1 style="
-                margin:0;
-                padding:0;
-                text-align:left;
-                line-height:1.0;
-            ">
-                Las noticias vuelan Podcast
-            </h1>
-
-            <div style="
-                color:#8a8a8a;
-                font-size:1.1rem;
-                font-weight:500;
-                margin-top:8px;
-                text-align:left;
-            ">
-                RAC
-            </div>
-
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    st.title("Las noticias vuelan Podcast")
+    st.caption("RAC")
     
 # --------------------------------------------------
 # HISTORIAL EN SESIÓN
