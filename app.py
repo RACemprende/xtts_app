@@ -5,10 +5,12 @@ import streamlit as st
 import torch
 import transformers.pytorch_utils as ptu
 
-# Aceptar licencia Coqui automáticamente
+# --------------------------------------------------
+# CONFIGURACIÓN
+# --------------------------------------------------
+
 os.environ["COQUI_TOS_AGREED"] = "1"
 
-# Compatibilidad Coqui / Transformers
 if not hasattr(ptu, "isin_mps_friendly"):
     def isin_mps_friendly(elements, test_elements):
         return torch.isin(elements, test_elements)
@@ -17,13 +19,12 @@ if not hasattr(ptu, "isin_mps_friendly"):
 
 from TTS.api import TTS
 
-
 # --------------------------------------------------
-# CONFIGURACIÓN DE PÁGINA
+# PÁGINA
 # --------------------------------------------------
 
 st.set_page_config(
-    page_title="Spanish AI Voice",
+    page_title="Las noticias vuelan Podcast",
     page_icon="🎙️",
     layout="centered"
 )
@@ -34,20 +35,31 @@ st.set_page_config(
 
 st.markdown("""
 <style>
+
 .block-container {
-    max-width: 850px;
+    max-width: 900px;
     padding-top: 2rem;
 }
 
 h1 {
     text-align: center;
+    margin-bottom: 0.3rem;
 }
 
 .subtitle {
     text-align: center;
-    color: #888;
+    color: #8a8a8a;
+    font-size: 1.05rem;
     margin-bottom: 2rem;
 }
+
+.stButton > button {
+    width: 100%;
+    height: 3rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -55,19 +67,19 @@ h1 {
 # CABECERA
 # --------------------------------------------------
 
-st.title("🎙️ Spanish AI Voice")
+st.title("🎙️ Las noticias vuelan Podcast")
 
 st.markdown(
     """
     <div class="subtitle">
-    Generación de voz en español utilizando Coqui TTS
+    Generador de narraciones de voz para episodios y contenidos del podcast
     </div>
     """,
     unsafe_allow_html=True
 )
 
 # --------------------------------------------------
-# CARGA DEL MODELO
+# MODELO
 # --------------------------------------------------
 
 @st.cache_resource
@@ -77,21 +89,21 @@ def load_model():
         gpu=False
     )
 
-with st.spinner("Cargando modelo de voz..."):
+with st.spinner("Cargando motor de voz..."):
     tts = load_model()
 
 # --------------------------------------------------
-# FORMULARIO
+# INTERFAZ
 # --------------------------------------------------
 
 texto = st.text_area(
-    "Texto",
-    value="Hola, esta es una prueba de generación de voz en español.",
-    height=180
+    "Guion del podcast",
+    value="Bienvenidos a Las noticias vuelan Podcast.",
+    height=220
 )
 
 velocidad = st.slider(
-    "Velocidad de lectura",
+    "Velocidad de narración",
     min_value=0.5,
     max_value=2.0,
     value=1.0,
@@ -99,13 +111,13 @@ velocidad = st.slider(
 )
 
 # --------------------------------------------------
-# GENERACIÓN
+# GENERAR AUDIO
 # --------------------------------------------------
 
-if st.button("Generar audio", type="primary"):
+if st.button("🎙️ Generar narración", type="primary"):
 
     if not texto.strip():
-        st.warning("Introduce un texto para generar el audio.")
+        st.warning("Introduce un texto para generar la narración.")
         st.stop()
 
     with tempfile.NamedTemporaryFile(
@@ -114,50 +126,34 @@ if st.button("Generar audio", type="primary"):
     ) as fp:
         output_path = fp.name
 
-    try:
+    with st.spinner("Generando audio..."):
 
-        with st.spinner("Generando audio..."):
-
-            # Algunos modelos VITS no soportan speed.
-            # Si falla, elimina speed=velocidad.
+        try:
             tts.tts_to_file(
                 text=texto,
                 file_path=output_path,
                 speed=velocidad
             )
 
-        st.success("Audio generado correctamente")
-
-        st.audio(output_path)
-
-        with open(output_path, "rb") as f:
-
-            st.download_button(
-                "⬇️ Descargar WAV",
-                data=f,
-                file_name="voz_espanol.wav",
-                mime="audio/wav"
+        except TypeError:
+            # Algunos modelos VITS no soportan el parámetro speed
+            tts.tts_to_file(
+                text=texto,
+                file_path=output_path
             )
 
-    except TypeError:
-        # Fallback si css10/vits no soporta speed
-
-        tts.tts_to_file(
-            text=texto,
-            file_path=output_path
-        )
-
-        st.success(
-            "El modelo no soporta control de velocidad. Audio generado con velocidad estándar."
-        )
-
-        st.audio(output_path)
-
-        with open(output_path, "rb") as f:
-
-            st.download_button(
-                "⬇️ Descargar WAV",
-                data=f,
-                file_name="voz_espanol.wav",
-                mime="audio/wav"
+            st.info(
+                "Este modelo no soporta control de velocidad. Se ha utilizado la velocidad estándar."
             )
+
+    st.success("Narración generada correctamente")
+
+    st.audio(output_path)
+
+    with open(output_path, "rb") as f:
+        st.download_button(
+            label="⬇️ Descargar episodio",
+            data=f,
+            file_name="las_noticias_vuelan.wav",
+            mime="audio/wav"
+        )
