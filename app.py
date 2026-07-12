@@ -80,17 +80,23 @@ with col_logo:
 with col_title:
     st.markdown(
         """
-        <h1 style="margin-bottom:0;">
-            Las noticias vuelan Podcast
-        </h1>
+        <div style="padding-left:10px;">
+            <h1 style="
+                margin-bottom:0;
+                text-align:left;
+            ">
+                Las noticias vuelan Podcast
+            </h1>
 
-        <p style="
-            color:#888;
-            font-size:1.1rem;
-            margin-top:0;
-        ">
-            RAC
-        </p>
+            <p style="
+                color:#888;
+                font-size:1.1rem;
+                margin-top:0;
+                text-align:left;
+            ">
+                RAC
+            </p>
+        </div>
         """,
         unsafe_allow_html=True
     )
