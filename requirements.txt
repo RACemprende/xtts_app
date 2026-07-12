@@ -7,7 +7,9 @@ torchvision
 torchaudio
 
 transformers==4.57.5
-
 sentencepiece
 
 coqui-tts==0.27.5
+
+gruut
+gruut-lang-es
