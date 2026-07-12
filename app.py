@@ -21,7 +21,7 @@ st.write("DESPUÉS DEL IMPORT")
 @st.cache_resource
 def load_model():
     return TTS(
-        "tts_models/multilingual/multi-dataset/xtts_v2",
+        "tts_models/es/mai/tacotron2-DDC",
         gpu=False
     )
 
