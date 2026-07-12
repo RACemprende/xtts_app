@@ -80,7 +80,7 @@ with col_logo:
 with col_title:
     st.markdown(
         """
-        <div style="margin-top:10px;">
+        <div style="margin-top:8px; margin-left:-5px;">
 
             <h1 style="
                 margin:0;
@@ -105,6 +105,7 @@ with col_title:
         """,
         unsafe_allow_html=True
     )
+    
 # --------------------------------------------------
 # HISTORIAL EN SESIÓN
 # --------------------------------------------------
