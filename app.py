@@ -1,4 +1,6 @@
 import os
+import tempfile
+
 import streamlit as st
 import torch
 import transformers.pytorch_utils as ptu
@@ -6,18 +8,24 @@ import transformers.pytorch_utils as ptu
 # Aceptar licencia Coqui automáticamente
 os.environ["COQUI_TOS_AGREED"] = "1"
 
-# Parche para compatibilidad transformers/coqui
+# Compatibilidad Coqui / Transformers
 if not hasattr(ptu, "isin_mps_friendly"):
     def isin_mps_friendly(elements, test_elements):
         return torch.isin(elements, test_elements)
 
     ptu.isin_mps_friendly = isin_mps_friendly
 
-st.write("ANTES DEL IMPORT")
-
 from TTS.api import TTS
 
-st.write("DESPUÉS DEL IMPORT")
+
+st.set_page_config(
+    page_title="Spanish TTS",
+    page_icon="🎙️",
+    layout="centered"
+)
+
+st.title("🎙️ Spanish Text To Speech")
+st.caption("Generación de voz usando Coqui TTS (CSS10 VITS)")
 
 
 @st.cache_resource
@@ -28,65 +36,42 @@ def load_model():
     )
 
 
-st.write("ANTES DE CREAR TTS")
+with st.spinner("Cargando modelo..."):
+    tts = load_model()
 
-tts = load_model()
-
-st.write("DESPUÉS DE CREAR TTS")
-
-st.success("Modelo cargado correctamente")
-
-# Información del modelo cargado
-if hasattr(tts, "speakers") and tts.speakers:
-    st.write(f"Número de speakers: {len(tts.speakers)}")
-else:
-    st.write("Modelo de voz única (sin speakers)")
-
-# Listar modelos disponibles
-st.subheader("Modelos españoles disponibles")
-
-try:
-    models = TTS().list_models()
-
-    spanish_models = [
-        model
-        for model in models
-        if "/es/" in model.lower()
-    ]
-
-    st.write(f"Encontrados {len(spanish_models)} modelos de español")
-
-    for model in sorted(spanish_models):
-        st.write(model)
-
-except Exception as e:
-    import traceback
-
-    st.error("Error listando modelos")
-    st.code(traceback.format_exc())
-
-import tempfile
-
-st.subheader("Prueba de síntesis")
 
 texto = st.text_area(
     "Texto",
-    "Hola, esta es una prueba de síntesis de voz en español."
+    value="Hola, esta es una prueba de generación de voz en español.",
+    height=180
 )
 
-if st.button("Generar audio"):
+if st.button("Generar audio", type="primary"):
 
-    with tempfile.NamedTemporaryFile(
-        suffix=".wav",
-        delete=False
-    ) as fp:
+    if not texto.strip():
+        st.warning("Introduce un texto.")
+    else:
 
-        wav_path = fp.name
+        with tempfile.NamedTemporaryFile(
+            suffix=".wav",
+            delete=False
+        ) as fp:
+            output_path = fp.name
 
-    tts.tts_to_file(
-        text=texto,
-        file_path=wav_path
-    )
+        with st.spinner("Generando audio..."):
+            tts.tts_to_file(
+                text=texto,
+                file_path=output_path
+            )
 
-    st.audio(wav_path)
+        st.success("Audio generado correctamente")
 
+        st.audio(output_path)
+
+        with open(output_path, "rb") as f:
+            st.download_button(
+                label="Descargar WAV",
+                data=f,
+                file_name="audio.wav",
+                mime="audio/wav"
+            )
