@@ -75,7 +75,7 @@ footer {
 col_logo, col_title = st.columns([1, 5])
 
 with col_logo:
-    st.image("logo.jpg", width=120)
+    st.image("logo.JPG", width=120)
 
 with col_title:
     st.markdown(
