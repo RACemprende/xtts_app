@@ -1,2 +1,2 @@
-# xtts_app
-App based on XTTS_V2 with gradio frontend for audio generation
+# tts_app
+Spanish Text-to-Speech web application for "Las noticias vuelan Podcast", built with Streamlit and Coqui TTS using the CSS10 VITS Spanish voice model.
