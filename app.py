@@ -42,18 +42,6 @@ st.markdown("""
     padding-top: 2rem;
 }
 
-h1 {
-    text-align: center;
-    margin-bottom: 0.3rem;
-}
-
-.subtitle {
-    text-align: center;
-    color: #8a8a8a;
-    font-size: 1.05rem;
-    margin-bottom: 2rem;
-}
-
 .stButton > button {
     width: 100%;
     height: 3rem;
