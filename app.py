@@ -1,5 +1,6 @@
 import os
 import tempfile
+from datetime import datetime
 
 import streamlit as st
 import torch
@@ -60,6 +61,10 @@ h1 {
     font-weight: 600;
 }
 
+footer {
+    visibility: hidden;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -72,11 +77,18 @@ st.title("🎙️ Las noticias vuelan Podcast")
 st.markdown(
     """
     <div class="subtitle">
-    Generador de narraciones de voz para episodios y contenidos del podcast
+    Convierte tus guiones en narraciones listas para publicar
     </div>
     """,
     unsafe_allow_html=True
 )
+
+# --------------------------------------------------
+# HISTORIAL EN SESIÓN
+# --------------------------------------------------
+
+if "history" not in st.session_state:
+    st.session_state.history = []
 
 # --------------------------------------------------
 # MODELO
@@ -93,7 +105,7 @@ with st.spinner("Cargando motor de voz..."):
     tts = load_model()
 
 # --------------------------------------------------
-# INTERFAZ
+# FORMULARIO
 # --------------------------------------------------
 
 texto = st.text_area(
@@ -111,6 +123,19 @@ velocidad = st.slider(
 )
 
 # --------------------------------------------------
+# DURACIÓN ESTIMADA
+# --------------------------------------------------
+
+words = len(texto.split())
+
+# Aproximación típica de narración
+estimated_minutes = words / 150
+
+st.info(
+    f"📝 {words} palabras · ⏱️ Duración estimada: {estimated_minutes:.1f} minutos"
+)
+
+# --------------------------------------------------
 # GENERAR AUDIO
 # --------------------------------------------------
 
@@ -119,6 +144,10 @@ if st.button("🎙️ Generar narración", type="primary"):
     if not texto.strip():
         st.warning("Introduce un texto para generar la narración.")
         st.stop()
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    file_name = f"las_noticias_vuelan_{timestamp}.wav"
 
     with tempfile.NamedTemporaryFile(
         suffix=".wav",
@@ -136,24 +165,75 @@ if st.button("🎙️ Generar narración", type="primary"):
             )
 
         except TypeError:
-            # Algunos modelos VITS no soportan el parámetro speed
+            # Algunos modelos VITS no soportan speed
             tts.tts_to_file(
                 text=texto,
                 file_path=output_path
             )
 
             st.info(
-                "Este modelo no soporta control de velocidad. Se ha utilizado la velocidad estándar."
+                "El modelo utiliza velocidad fija."
             )
 
-    st.success("Narración generada correctamente")
-
-    st.audio(output_path)
+    st.success("✅ Narración generada correctamente")
 
     with open(output_path, "rb") as f:
-        st.download_button(
-            label="⬇️ Descargar episodio",
-            data=f,
-            file_name="las_noticias_vuelan.wav",
-            mime="audio/wav"
+        audio_bytes = f.read()
+
+    size_kb = len(audio_bytes) / 1024
+
+    st.audio(audio_bytes)
+
+    st.download_button(
+        label="⬇️ Descargar episodio",
+        data=audio_bytes,
+        file_name=file_name,
+        mime="audio/wav"
+    )
+
+    st.caption(
+        f"Archivo: {file_name} · Tamaño: {size_kb:.1f} KB"
+    )
+
+    # Guardar en historial de sesión
+    st.session_state.history.insert(
+        0,
+        {
+            "date": datetime.now().strftime("%d/%m/%Y %H:%M"),
+            "name": file_name,
+            "words": words,
+            "duration": estimated_minutes
+        }
+    )
+
+# --------------------------------------------------
+# HISTORIAL
+# --------------------------------------------------
+
+if st.session_state.history:
+
+    st.divider()
+
+    st.subheader("📚 Audios generados en esta sesión")
+
+    for item in st.session_state.history[:10]:
+
+        st.markdown(
+            f"""
+            **{item['name']}**
+
+            - Fecha: {item['date']}
+            - Palabras: {item['words']}
+            - Duración estimada: {item['duration']:.1f} min
+            """
         )
+
+# --------------------------------------------------
+# FOOTER
+# --------------------------------------------------
+
+st.divider()
+
+st.caption(
+    "Las noticias vuelan Podcast · Generación de voz con Coqui TTS"
+)
