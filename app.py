@@ -65,3 +65,28 @@ except Exception as e:
     st.error("Error listando modelos")
     st.code(traceback.format_exc())
 
+import tempfile
+
+st.subheader("Prueba de síntesis")
+
+texto = st.text_area(
+    "Texto",
+    "Hola, esta es una prueba de síntesis de voz en español."
+)
+
+if st.button("Generar audio"):
+
+    with tempfile.NamedTemporaryFile(
+        suffix=".wav",
+        delete=False
+    ) as fp:
+
+        wav_path = fp.name
+
+    tts.tts_to_file(
+        text=texto,
+        file_path=wav_path
+    )
+
+    st.audio(wav_path)
+
