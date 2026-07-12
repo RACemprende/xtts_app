@@ -72,16 +72,28 @@ footer {
 # CABECERA
 # --------------------------------------------------
 
-st.title("🎙️ Las noticias vuelan Podcast")
+col_logo, col_title = st.columns([1, 5])
 
-st.markdown(
-    """
-    <div class="subtitle">
-    Convierte tus guiones en narraciones listas para publicar
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+with col_logo:
+    st.image("logo.png", width=120)
+
+with col_title:
+    st.markdown(
+        """
+        <h1 style="margin-bottom:0;">
+            Las noticias vuelan Podcast
+        </h1>
+
+        <p style="
+            color:#888;
+            font-size:1.1rem;
+            margin-top:0;
+        ">
+            RAC
+        </p>
+        """,
+        unsafe_allow_html=True
+    )
 
 # --------------------------------------------------
 # HISTORIAL EN SESIÓN
